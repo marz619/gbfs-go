@@ -18,9 +18,23 @@ func main() {
 	}
 
 	fmt.Println("languages:", d.Languages())
+
 	for _, l := range d.Languages() {
 		for _, f := range d.Feeds(l) {
 			fmt.Printf("%s: %s\n", l, f)
+		}
+	}
+
+	// system info
+	for _, l := range d.Languages() {
+		for _, f := range d.Feeds(l) {
+			if f.Name == "system_information" {
+				sysInfo, err := gbfs.SystemInfo(f.URL)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Println(l, f.Name, sysInfo.MiscFields())
+			}
 		}
 	}
 }

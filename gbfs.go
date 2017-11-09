@@ -10,6 +10,7 @@ import (
 // GBFS interface
 type GBFS interface {
 	Discover() (Discovery, error)
+	SystemInfo(url string) (SystemInfo, error)
 }
 
 // New GBFS with default http.Client
