@@ -1,6 +1,9 @@
 package gbfs
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // Feed struct
 type Feed struct {
@@ -42,4 +45,18 @@ func (d Discovery) Feeds(lang string) []Feed {
 		return f.Feeds
 	}
 	return nil
+}
+
+// ErrNoDiscovery error
+var ErrNoDiscovery = errors.New("no discovery url")
+
+// Discovery /root JSON object
+func (g *gbfs) Discover() (d Discovery, err error) {
+	if g.discovery == "" {
+		err = ErrNoDiscovery
+		return
+	}
+	// get the Discovery doc
+	err = g.get(g.discovery, &d)
+	return
 }

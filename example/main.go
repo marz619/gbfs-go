@@ -11,12 +11,13 @@ var tobikeshare = "https://tor.publicbikesystem.net/ube/gbfs/v1/"
 func main() {
 	gbfs := gbfs.New(tobikeshare)
 
-	d, err := gbfs.Discovery()
+	// discover
+	d, err := gbfs.Discover()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(d.Languages())
+	fmt.Println("languages:", d.Languages())
 	for _, l := range d.Languages() {
 		for _, f := range d.Feeds(l) {
 			fmt.Printf("%s: %s\n", l, f)

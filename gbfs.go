@@ -2,7 +2,6 @@ package gbfs
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,7 +9,7 @@ import (
 
 // GBFS interface
 type GBFS interface {
-	Discovery() (Discovery, error)
+	Discover() (Discovery, error)
 }
 
 // New GBFS with default http.Client
@@ -63,18 +62,4 @@ func (g *gbfs) get(url string, dst interface{}) error {
 	}
 	// try to unmarshal as json
 	return json.NewDecoder(res.Body).Decode(dst)
-}
-
-// ErrNoDiscovery error
-var ErrNoDiscovery = errors.New("no discovery url")
-
-// Discovery /root JSON object
-func (g *gbfs) Discovery() (d Discovery, err error) {
-	if g.discovery == "" {
-		err = ErrNoDiscovery
-		return
-	}
-	// get the Discovery doc
-	err = g.get(g.discovery, &d)
-	return
 }
