@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/marz619/gbfs"
+	"github.com/marz619/gbfs-go"
 )
 
 var tobikeshare = "https://tor.publicbikesystem.net/ube/gbfs/v1/"
@@ -33,7 +33,7 @@ func main() {
 				if err != nil {
 					panic(err)
 				}
-				fmt.Println(l, f.Name, sysInfo.MiscFields())
+				fmt.Println(l, f.Name, sysInfo.Data.SystemID)
 			}
 		}
 	}
