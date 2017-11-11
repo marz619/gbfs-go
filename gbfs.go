@@ -9,7 +9,7 @@ import (
 
 // GBFS interface
 type GBFS interface {
-	Discover() (Discovery, error)
+	Discover() (Discover, error)
 	SystemInfo(url string) (SystemInfo, error)
 }
 
@@ -45,7 +45,7 @@ type gbfs struct {
 	client    *http.Client
 
 	// cached feeds
-	feeds DiscoveryData
+	feeds DiscoverData
 }
 
 func (g *gbfs) get(url string, dst interface{}) error {
