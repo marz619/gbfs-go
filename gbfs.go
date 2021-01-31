@@ -7,22 +7,22 @@ import (
 	"net/http"
 )
 
-// GBFS interface
-type GBFS interface {
+// Client interface
+type Client interface {
 	Discover() (Discover, error)
 	SystemInfo(url string) (SystemInfo, error)
 }
 
-// New GBFS with default http.Client
-func New(discovery string) GBFS {
+// New Client with default http.Client
+func New(discovery string) Client {
 	return &gbfs{
 		discovery: discovery,
 		client:    http.DefaultClient,
 	}
 }
 
-// NewClient GBFS with custom http.Client
-func NewClient(discovery string, client *http.Client) GBFS {
+// NewWithClient Client with custom http.Client
+func NewWithClient(discovery string, client *http.Client) Client {
 	if client == nil {
 		panic("nil client")
 	}
@@ -39,7 +39,7 @@ type root struct {
 	Data        json.RawMessage `json:"data"`
 }
 
-// GBFS type
+// Client type
 type gbfs struct {
 	discovery string
 	client    *http.Client

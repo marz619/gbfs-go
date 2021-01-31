@@ -1,8 +1,6 @@
 package gbfs
 
-import (
-	"errors"
-)
+import "errors"
 
 // SystemInfoData struct
 type SystemInfoData struct {
