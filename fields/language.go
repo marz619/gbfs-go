@@ -9,10 +9,6 @@ type Language struct {
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (l *Language) UnmarshalJSON(data []byte) error {
-	if l == nil {
-		l = new(Language)
-	}
-
 	s, err := unmarshalToString(data)
 	if err != nil {
 		return err

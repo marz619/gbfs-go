@@ -13,10 +13,6 @@ var ErrNonNegativeInt = errors.New("NonNegativeInt must have value >= 0")
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (n *NonNegativeInt) UnmarshalJSON(data []byte) error {
-	if n == nil {
-		n = new(NonNegativeInt)
-	}
-
 	i, err := unmarshalToInt(data)
 	if err != nil {
 		return err
@@ -42,10 +38,6 @@ var ErrNonNegativeFloat = errors.New("NonNegativeFloat must have value >= 0.0")
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (n *NonNegativeFloat) UnmarshalJSON(data []byte) error {
-	if n == nil {
-		n = new(NonNegativeFloat)
-	}
-
 	f, err := unmarshalToFloat64(data)
 	if err != nil {
 		return err
@@ -59,6 +51,6 @@ func (n *NonNegativeFloat) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (n *NonNegativeFloat) String() string {
-	return strconv.FormatFloat(float64(*n), 'g', -1, 64)
+func (n NonNegativeFloat) String() string {
+	return strconv.FormatFloat(float64(n), 'g', -1, 64)
 }

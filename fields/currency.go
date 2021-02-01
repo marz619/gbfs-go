@@ -9,10 +9,6 @@ type Currency struct {
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (c *Currency) UnmarshalJSON(data []byte) error {
-	if c == nil {
-		c = new(Currency)
-	}
-
 	s, err := unmarshalToString(data)
 	if err != nil {
 		return err

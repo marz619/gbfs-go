@@ -19,20 +19,17 @@ type Client interface {
 
 // New Client with default http.Client
 func New(discovery string) Client {
-	return &gbfs{
-		discovery: discovery,
-		c:         http.DefaultClient,
-	}
+	return NewWithClient(discovery, nil)
 }
 
 // NewWithClient Client with custom http.Client
 func NewWithClient(discovery string, c *http.Client) Client {
 	if c == nil {
-		panic("nil c")
+		c = http.DefaultClient
 	}
 	return &gbfs{
-		discovery: discovery,
 		c:         c,
+		discovery: discovery,
 	}
 }
 

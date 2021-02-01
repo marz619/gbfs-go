@@ -15,10 +15,6 @@ var ErrURLScheme = errors.New("URL Scheme must be 'http' OR 'https'")
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (u *URL) UnmarshalJSON(data []byte) error {
-	if u == nil {
-		u = new(URL)
-	}
-
 	url, err := unmarshalToURL(data)
 	if err != nil {
 		return err

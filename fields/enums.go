@@ -74,10 +74,6 @@ var ErrUnknownDayOfWeek = errors.New("unknown day")
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (d *DayOfWeek) UnmarshalJSON(data []byte) error {
-	if d == nil {
-		d = new(DayOfWeek)
-	}
-
 	s, err := unmarshalToString(data)
 	if err != nil {
 		return err
@@ -108,10 +104,6 @@ var ErrUnknownMobile = errors.New("unknown mobile")
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (m *Mobile) UnmarshalJSON(data []byte) error {
-	if m == nil {
-		m = new(Mobile)
-	}
-
 	s, err := unmarshalToString(data)
 	if err != nil {
 		return err
@@ -148,10 +140,6 @@ var ErrUnknownRentalMethod = errors.New("unknown rental method")
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (r *RentalMethod) UnmarshalJSON(data []byte) error {
-	if r == nil {
-		r = new(RentalMethod)
-	}
-
 	s, err := unmarshalToString(data)
 	if err != nil {
 		return err
@@ -182,10 +170,6 @@ var ErrUnknownUserType = errors.New("unknown user type")
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (u *UserType) UnmarshalJSON(data []byte) error {
-	if u == nil {
-		u = new(UserType)
-	}
-
 	s, err := unmarshalToString(data)
 	if err != nil {
 		return err

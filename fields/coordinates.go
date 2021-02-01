@@ -10,10 +10,6 @@ var ErrLatitude = errors.New("Latitude must in range [-90.0, 90.0]")
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (l *Latitude) UnmarshalJSON(data []byte) error {
-	if l == nil {
-		l = new(Latitude)
-	}
-
 	f, err := unmarshalToFloat64(data)
 	if err != nil {
 		return err
@@ -35,10 +31,6 @@ var ErrLongitude = errors.New("Longitude must in range [-180.0, 180.0]")
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (l *Longitude) UnmarshalJSON(data []byte) error {
-	if l == nil {
-		l = new(Longitude)
-	}
-
 	f, err := unmarshalToFloat64(data)
 	if err != nil {
 		return err

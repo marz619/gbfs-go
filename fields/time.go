@@ -16,10 +16,6 @@ const dateFmt = "2006-01-02"
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (d *Date) UnmarshalJSON(data []byte) error {
-	if d == nil {
-		d = new(Date)
-	}
-
 	s, err := unmarshalToString(data)
 	if err != nil {
 		return err
@@ -46,11 +42,11 @@ func (d *Day) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	if *n < 1 || *n > 31 {
+	if n < 1 || n > 31 {
 		return ErrInvalidDay
 	}
 
-	*d = Day(*n)
+	*d = Day(n)
 	return nil
 }
 
@@ -67,11 +63,11 @@ func (m *Month) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	if *n < 1 || *n > 12 {
+	if n < 1 || n > 12 {
 		return ErrInvalidMonth
 	}
 
-	*m = Month(*n)
+	*m = Month(n)
 	return nil
 }
 
@@ -88,11 +84,11 @@ func (y *Year) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	if *n < 0 || *n > 9999 {
+	if n < 0 || n > 9999 {
 		return ErrInvalidYear
 	}
 
-	*y = Year(*n)
+	*y = Year(n)
 	return nil
 }
 
@@ -106,10 +102,6 @@ const timeFmt = "15:04:05"
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (t *Time) UnmarshalJSON(data []byte) error {
-	if t == nil {
-		t = new(Time)
-	}
-
 	s, err := unmarshalToString(data)
 	if err != nil {
 		return err
@@ -134,10 +126,6 @@ type Timestamp struct {
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (t *Timestamp) UnmarshalJSON(data []byte) error {
-	if t == nil {
-		t = new(Timestamp)
-	}
-
 	i, err := unmarshalToInt(data)
 	if err != nil {
 		return err
@@ -158,10 +146,6 @@ type Timezone struct {
 
 // UnmarshalJSON implements json.Unmarshaler interface
 func (t *Timezone) UnmarshalJSON(data []byte) error {
-	if t == nil {
-		t = new(Timezone)
-	}
-
 	zone, err := unmarshalToString(data)
 	if err != nil {
 		return err

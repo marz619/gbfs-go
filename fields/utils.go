@@ -21,6 +21,12 @@ func ContainsSpaces(s string) bool {
 	return ContainsRuneFunc(s, unicode.IsSpace)
 }
 
+// unmarshal returns an interface value
+func unmarshal(data []byte) (v interface{}, err error) {
+	err = json.Unmarshal(data, &v)
+	return
+}
+
 // unmarshalToFloat64 is a convenience method to unmarshal some bytes into a
 // float64
 func unmarshalToFloat64(data []byte) (f float64, err error) {
@@ -69,14 +75,14 @@ func unmarshalToURL(data []byte) (u *url.URL, err error) {
 
 // unmarshalToNonNegativeInt is a convenience method to unmarshal some bytes
 // into *NonNegativeInt
-func unmarshalToNonNegativeInt(data []byte) (n *NonNegativeInt, err error) {
-	err = json.Unmarshal(data, n)
+func unmarshalToNonNegativeInt(data []byte) (n NonNegativeInt, err error) {
+	err = json.Unmarshal(data, &n)
 	return
 }
 
 // unmarshalToNonNegativeFloat is a convenience method to unmarshal some bytes
 // into *NonNegativeInt
-func unmarshalToNonNegativeFloat(data []byte) (n *NonNegativeFloat, err error) {
-	err = json.Unmarshal(data, n)
+func unmarshalToNonNegativeFloat(data []byte) (n NonNegativeFloat, err error) {
+	err = json.Unmarshal(data, &n)
 	return
 }
