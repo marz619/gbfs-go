@@ -4,7 +4,7 @@ import "golang.org/x/text/language"
 
 // Language ...
 type Language struct {
-	*language.Tag
+	language.Tag
 }
 
 // UnmarshalJSON implements json.Unmarshaler interface
@@ -18,6 +18,6 @@ func (l *Language) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	*((*l).Tag), err = language.Parse(s)
+	(*l).Tag, err = language.Parse(s)
 	return err
 }

@@ -1,10 +1,12 @@
 package gbfs
 
 import (
+	"errors"
+
 	f "github.com/marz619/gbfs-go/fields"
 )
 
-// Output Format: https://github.com/NABSA/gbfs/blob/v2.0/gbfs.md#output-format
+// Output https://github.com/NABSA/gbfs/blob/v2.0/gbfs.md#output-format
 type Output struct {
 	LastUpdated f.Timestamp      `json:"last_updated"`
 	TTL         f.NonNegativeInt `json:"ttl"`
@@ -12,15 +14,35 @@ type Output struct {
 	// Data is implemented in underlying objects
 }
 
+// Feed ...
+type Feed struct {
+	Name string `json:"name"`
+	URL  f.URL  `json:"url"`
+}
+
 // GBFS https://github.com/NABSA/gbfs/blob/v2.0/gbfs.md#gbfsjson
 type GBFS struct {
 	Output
 	Data map[f.Language]struct {
-		Feeds []struct {
-			Name string `json:"name"`
-			URL  f.URL  `json:"url"`
-		} `json:"feeds"`
+		Feeds []Feed `json:"feeds"`
 	} `json:"data"`
+}
+
+// Languages ...
+func (g GBFS) Languages() []f.Language {
+	ls := make([]f.Language, 0, len(g.Data))
+	for l := range g.Data {
+		ls = append(ls, l)
+	}
+	return ls
+}
+
+// ErrNoFeed ...
+var ErrNoFeed = errors.New("no feed for language")
+
+// Feeds ...
+func (g GBFS) Feeds(l f.Language) []Feed {
+	return g.Data[l].Feeds
 }
 
 // Versions https://github.com/NABSA/gbfs/blob/v2.0/gbfs.md#gbfs_versionsjson-added-in-v11

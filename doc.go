@@ -1,5 +1,5 @@
-// GBFS implements the General Bikeshare Feed Specification (WIP)
+// GBFS implements the General Bikeshare Feed Specification v2.0 (WIP)
 //
-// https://github.com/NABSA/gbfs/blob/master/gbfs.md
+// https://github.com/NABSA/gbfs/blob/v2.0/gbfs.md
 
 package gbfs

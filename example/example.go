@@ -29,7 +29,7 @@ func main() {
 	for _, l := range d.Languages() {
 		for _, f := range d.Feeds(l) {
 			if f.Name == "system_information" {
-				sysInfo, err := gbfs.SystemInfo(f.URL)
+				sysInfo, err := gbfs.SystemInformation(f.URL.String())
 				if err != nil {
 					panic(err)
 				}

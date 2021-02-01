@@ -8,7 +8,7 @@ import (
 
 // Date ...
 type Date struct {
-	*time.Time
+	time.Time
 }
 
 // date format YYYY-MM-DD
@@ -25,7 +25,7 @@ func (d *Date) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	*((*d).Time), err = time.Parse(dateFmt, s)
+	(*d).Time, err = time.Parse(dateFmt, s)
 	return err
 }
 
@@ -98,7 +98,7 @@ func (y *Year) UnmarshalJSON(data []byte) error {
 
 // Time ...
 type Time struct {
-	*time.Time
+	time.Time
 }
 
 // time format HH:mm:ss
@@ -115,7 +115,7 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	*((*t).Time), err = time.Parse(timeFmt, s)
+	(*t).Time, err = time.Parse(timeFmt, s)
 	if err != nil {
 		return err
 	}
@@ -129,7 +129,7 @@ func (t *Time) String() string {
 
 // Timestamp ...
 type Timestamp struct {
-	*time.Time
+	time.Time
 }
 
 // UnmarshalJSON implements json.Unmarshaler interface
@@ -143,7 +143,7 @@ func (t *Timestamp) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	*((*t).Time) = time.Unix(int64(i), 0).UTC()
+	(*t).Time = time.Unix(int64(i), 0).UTC()
 	return nil
 }
 
