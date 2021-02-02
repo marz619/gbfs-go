@@ -5,15 +5,16 @@ import (
 	"reflect"
 )
 
-// Price ...
+// Price is represented as NonNegativeFloat OR string
 type Price struct {
-	k reflect.Kind // would be used if we implement
+	k reflect.Kind // would be used if we implement MarshalJSON
 	// internal store
 	s string
 	n NonNegativeFloat
 }
 
-// ErrInvalidPriceType ...
+// ErrInvalidPriceType returned when the .(type) of unmarshaled data is not a
+// string or float
 var ErrInvalidPriceType = errors.New("price must be string or float")
 
 // UnmarshalJSON implements json.Unmarshaler interface
@@ -35,17 +36,17 @@ func (p *Price) UnmarshalJSON(data []byte) error {
 		p.s = p.n.String()
 	case string:
 		p.k = reflect.String
-		p.s = v.(string)
-		p.n, err = unmarshalToNonNegativeFloat([]byte(p.s))
+		p.n, err = unmarshalToNonNegativeFloat([]byte(v.(string)))
 		if err != nil {
 			return err
 		}
+		p.s = v.(string)
 	}
 
 	return nil
 }
 
-// Float64 ...
+// Float64 returns the float64 value contained in this NonNegativeFloat
 func (p Price) Float64() float64 {
 	return float64(p.n)
 }

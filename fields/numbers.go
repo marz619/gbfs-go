@@ -52,5 +52,9 @@ func (n *NonNegativeFloat) UnmarshalJSON(data []byte) error {
 }
 
 func (n NonNegativeFloat) String() string {
+	// special case 0
+	if n == 0 {
+		return "0.0"
+	}
 	return strconv.FormatFloat(float64(n), 'g', -1, 64)
 }
