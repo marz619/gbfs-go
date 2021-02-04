@@ -1,4 +1,4 @@
-package tests
+package fields
 
 import (
 	"encoding/json"
@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/marz619/gbfs-go/fields"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,18 +31,20 @@ func TestPriceUnmarshalJSON(t *testing.T) {
 		{"float_max", []byte(maxFS), maxFS, maxF, nil},
 		{"float_smallest_non_zero", []byte(minNzFS), minNzFS, minNzF, nil},
 		// {"empty", []byte(`""`), "", 0., nil},
+		// // base unmarshal error
+		// {"error_unmarshal", []byte(``), "", 0.0, &json.SyntaxError{"unexpected end of JSON input"}},
 		// errors invalid type
-		{"error_type_object", []byte(`{}`), "", 0., fields.ErrInvalidPriceType},
-		{"error_type_array", []byte(`[]`), "", 0., fields.ErrInvalidPriceType},
-		{"error_type_bool_true", []byte(`true`), "", 0., fields.ErrInvalidPriceType},
-		{"error_type_bool_false", []byte(`false`), "", 0., fields.ErrInvalidPriceType},
+		{"error_type_object", []byte(`{}`), "", 0.0, ErrInvalidPriceType},
+		{"error_type_array", []byte(`[]`), "", 0.0, ErrInvalidPriceType},
+		{"error_type_bool_true", []byte(`true`), "", 0.0, ErrInvalidPriceType},
+		{"error_type_bool_false", []byte(`false`), "", 0.0, ErrInvalidPriceType},
 		// error negative value
-		{"non_negative_string", []byte(`"-3.14159"`), "", 0., fields.ErrNonNegativeFloat},
-		{"non_negative_float", []byte(`-3.14159`), "", 0., fields.ErrNonNegativeFloat},
+		{"non_negative_string", []byte(`"-3.14159"`), "", 0.0, ErrNonNegativeFloat},
+		{"non_negative_float", []byte(`-3.14159`), "", 0.0, ErrNonNegativeFloat},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			// unmarhsal container
-			var p fields.Price
+			var p Price
 
 			if tc.err != nil {
 				assert.ErrorIs(t, json.Unmarshal(tc.raw, &p), tc.err)
@@ -55,9 +56,9 @@ func TestPriceUnmarshalJSON(t *testing.T) {
 		})
 	}
 
-	// simple json struct
+	// test the price field in a simple json struct
 	type S struct {
-		P fields.Price `json:"price"`
+		P Price `json:"price"`
 	}
 
 	for _, tc := range []struct {
@@ -76,9 +77,9 @@ func TestPriceUnmarshalJSON(t *testing.T) {
 		})
 	}
 
-	// simple json struct with pointer
+	// test a pointer to the price field in a simple json struct
 	type U struct {
-		P *fields.Price `json:"price"`
+		P *Price `json:"price"`
 	}
 
 	for _, tc := range []struct {

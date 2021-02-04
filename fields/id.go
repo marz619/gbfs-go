@@ -19,7 +19,7 @@ func (id *ID) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	if ContainsSpaces(raw) {
+	if containsSpaces(raw) {
 		return ErrIDSpaces
 	}
 

@@ -1,6 +1,7 @@
 package gbfs
 
 import (
+	"encoding/json"
 	"errors"
 
 	f "github.com/marz619/gbfs-go/fields"
@@ -12,6 +13,17 @@ type Output struct {
 	TTL         f.NonNegativeInt `json:"ttl"`
 	Version     string           `json:"version"`
 	// Data is implemented in underlying objects
+
+	// client for embedding shenanigans
+	c client
+}
+
+func (o *Output) set(c client) {
+	o.c = c
+}
+
+func (o *Output) get(url string, dst interface{}) error {
+	return o.c.get(url, dst)
 }
 
 // Feed ...
@@ -20,11 +32,45 @@ type Feed struct {
 	URL  f.URL  `json:"url"`
 }
 
+// Feeds ...
+type Feeds struct {
+	feeds []Feed
+	names []string
+	cache map[string]Feed
+}
+
+// UnmarshalJSON implements json.Unmarshaler interface
+func (f *Feeds) UnmarshalJSON(data []byte) error {
+	err := json.Unmarshal(data, &f.feeds)
+	if err != nil {
+		return err
+	}
+
+	f.cache = make(map[string]Feed, len(f.feeds))
+	f.names = make([]string, 0, len(f.feeds))
+	for _, feed := range f.feeds {
+		f.cache[feed.Name] = feed
+		f.names = append(f.names, feed.Name)
+	}
+
+	return nil
+}
+
+// Names returns the names of feeds
+func (f Feeds) Names() []string {
+	return f.names
+}
+
+// URL returns the URL for a particular feed
+func (f Feeds) URL(name string) f.URL {
+	return f.cache[name].URL
+}
+
 // GBFS https://github.com/NABSA/gbfs/blob/v2.0/gbfs.md#gbfsjson
 type GBFS struct {
 	Output
 	Data map[f.Language]struct {
-		Feeds []Feed `json:"feeds"`
+		Feeds Feeds `json:"feeds"`
 	} `json:"data"`
 }
 
@@ -40,8 +86,13 @@ func (g GBFS) Languages() []f.Language {
 // ErrNoFeed ...
 var ErrNoFeed = errors.New("no feed for language")
 
-// Feeds ...
-func (g GBFS) Feeds(l f.Language) []Feed {
+// IterFeeds allows a client to range over the feeds for this GBFS feed
+func (g GBFS) IterFeeds(l f.Language) []Feed {
+	return g.Data[l].Feeds.feeds
+}
+
+// Feeds returns the Feeds available for a specific language for this GBFS feed
+func (g GBFS) Feeds(l f.Language) Feeds {
 	return g.Data[l].Feeds
 }
 

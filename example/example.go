@@ -12,7 +12,7 @@ func main() {
 	gbfs := gbfs.New(tobikeshare)
 
 	// discover
-	d, err := gbfs.Discover()
+	d, err := gbfs.GBFS()
 	if err != nil {
 		panic(err)
 	}
@@ -20,21 +20,25 @@ func main() {
 	fmt.Println("languages:", d.Languages())
 
 	for _, l := range d.Languages() {
-		for _, f := range d.Feeds(l) {
-			fmt.Printf("%s: %s\n", l, f)
+		fmt.Printf("\n%s feeds:\n", l)
+		for _, f := range d.IterFeeds(l) {
+			fmt.Printf("\t%s\n", f)
 		}
 	}
 
-	// system info
+	fmt.Println("\nsystem information:")
+	// system info in all languages
 	for _, l := range d.Languages() {
-		for _, f := range d.Feeds(l) {
-			if f.Name == "system_information" {
-				sysInfo, err := gbfs.SystemInformation(f.URL.String())
-				if err != nil {
-					panic(err)
-				}
-				fmt.Println(l, f.Name, sysInfo.Data.SystemID)
-			}
+		si, err := d.SystemInformation(l)
+		if err != nil {
+			panic(err)
 		}
+
+		fmt.Println("\t", l)
+		fmt.Println("\t", si.Data.SystemID)
+		fmt.Println("\t", si.Data.Name)
+		fmt.Println("\t", si.Data.Timezone)
+		fmt.Println("\t", si.LastUpdated)
+		fmt.Println("\t", si.TTL)
 	}
 }

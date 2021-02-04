@@ -10,40 +10,53 @@ import (
 	f "github.com/marz619/gbfs-go/fields"
 )
 
-// Client interface
+// Client interface is the public Client interface used to retrieve data from
+// a GBFS API
 type Client interface {
-	Discover() (GBFS, error)
 	GBFS() (GBFS, error)
-	SystemInformation(string) (SystemInformation, error)
 }
 
 // New Client with default http.Client
-func New(discovery string) Client {
-	return NewWithClient(discovery, nil)
+func New(rootURL string) Client {
+	return NewClient(rootURL, nil)
 }
 
-// NewWithClient Client with custom http.Client
-func NewWithClient(discovery string, c *http.Client) Client {
+// NewClient returns a Client
+func NewClient(rootURL string, c *http.Client) Client {
 	if c == nil {
 		c = http.DefaultClient
 	}
-	return &gbfs{
-		c:         c,
-		discovery: discovery,
+	return &clientImpl{
+		Client:  c,
+		rootURL: rootURL,
 	}
 }
 
-// Client
-type gbfs struct {
-	c         *http.Client
-	discovery string
-
-	// cached feeds
-	feeds map[f.Language][]Feed
+// client interface
+type client interface {
+	get(string, interface{}) error
+	set(client)
 }
 
-func (g *gbfs) get(url string, dst interface{}) error {
-	res, err := g.c.Get(url)
+func setC(c client, dst interface{}) {
+	if t, ok := dst.(client); ok {
+		t.set(c)
+	}
+}
+
+// internal Client implementation
+type clientImpl struct {
+	*http.Client
+	rootURL string
+}
+
+func (c *clientImpl) set(_ client) {} // noop to satisfy interface
+
+// get retrieves
+func (c *clientImpl) get(url string, dst interface{}) error {
+	defer setC(c, dst)
+
+	res, err := c.Get(url)
 	if err != nil {
 		return err
 	}
@@ -54,41 +67,29 @@ func (g *gbfs) get(url string, dst interface{}) error {
 		if err != nil {
 			return err
 		}
-		return fmt.Errorf("HTTP<%d>: %s", res.StatusCode, content)
+		return fmt.Errorf("HTTP<%d>: %s", res.StatusCode, string(content))
 	}
 
 	// try to unmarshal as json
 	return json.NewDecoder(res.Body).Decode(dst)
 }
 
-// ErrNoDiscoveryURL error
-var ErrNoDiscoveryURL = errors.New("no discovery url")
+// ErrNoRootURL error
+var ErrNoRootURL = errors.New("no rootURL url")
 
-// Discover /root JSON object
-func (g *gbfs) Discover() (d GBFS, err error) {
-	if g.discovery == "" {
-		err = ErrNoDiscoveryURL
+func (c *clientImpl) GBFS() (g GBFS, err error) {
+	if c.rootURL == "" {
+		err = ErrNoRootURL
 		return
 	}
 	// get the Discover doc
-	err = g.get(g.discovery, &d)
+	err = c.get(c.rootURL, &g)
+
 	return
 }
 
-func (g *gbfs) GBFS() (GBFS, error) {
-	return g.Discover()
-}
-
-// ErrNoSystemInfoURL error
-var ErrNoSystemInfoURL = errors.New("must provide system information url")
-
-// SystemInfo data
-func (g *gbfs) SystemInformation(url string) (s SystemInformation, err error) {
-	if url == "" {
-		err = ErrNoSystemInfoURL
-		return
-	}
-	// retrieve the system information
-	err = g.get(url, &s)
+// SystemInformation ...
+func (g GBFS) SystemInformation(l f.Language) (s SystemInformation, err error) {
+	err = g.c.get(g.Feeds(l).URL("system_information").String(), &s)
 	return
 }

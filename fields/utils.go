@@ -6,8 +6,9 @@ import (
 	"unicode"
 )
 
-// ContainsRuneFunc ...
-func ContainsRuneFunc(s string, f func(rune) bool) bool {
+// containsRuneFunc uses a provided predicate func to determine if some rune(s)
+// are contained in the string
+func containsRuneFunc(s string, f func(rune) bool) bool {
 	for _, r := range s {
 		if f(r) {
 			return true
@@ -16,9 +17,9 @@ func ContainsRuneFunc(s string, f func(rune) bool) bool {
 	return false
 }
 
-// ContainsSpaces ...
-func ContainsSpaces(s string) bool {
-	return ContainsRuneFunc(s, unicode.IsSpace)
+// containsSpaces determines if there are spaces in the string
+func containsSpaces(s string) bool {
+	return containsRuneFunc(s, unicode.IsSpace)
 }
 
 // unmarshal returns an interface value
