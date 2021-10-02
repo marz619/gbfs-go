@@ -16,6 +16,24 @@ type Client interface {
 	GBFS() (GBFS, error)
 }
 
+// AutoRefreshClient extends the Client interface providing the ability to auto
+// refresh documents based on the returned TTL
+type AutoRefreshClient interface {
+	Client
+	Pause() RefreshState
+	Resume() RefreshState
+}
+
+// RefreshState enum
+type RefreshState uint8
+
+const (
+	_ RefreshState = iota
+	Paused
+	Refreshing
+	Errored
+)
+
 // New Client with default http.Client
 func New(rootURL string) Client {
 	return NewClient(rootURL, nil)
@@ -27,8 +45,23 @@ func NewClient(rootURL string, c *http.Client) Client {
 		c = http.DefaultClient
 	}
 	return &clientImpl{
-		Client:  c,
-		rootURL: rootURL,
+		Client:      c,
+		rootURL:     rootURL,
+		autoRefresh: false,
+	}
+}
+
+// NewAutoRefreshClient returns a Client that will self update based on the
+// returned TTL
+func NewAutoRefreshClient(rootURL string, c *http.Client) AutoRefreshClient {
+	if c == nil {
+		c = http.DefaultClient
+	}
+	return &clientImpl{
+		Client:      c,
+		rootURL:     rootURL,
+		autoRefresh: true,
+		state:       Paused,
 	}
 }
 
@@ -44,10 +77,12 @@ func setC(c client, dst interface{}) {
 	}
 }
 
-// internal Client implementation
+// internal client implementation
 type clientImpl struct {
 	*http.Client
-	rootURL string
+	rootURL     string
+	autoRefresh bool
+	state       RefreshState
 }
 
 func (c *clientImpl) set(_ client) {} // noop to satisfy interface
@@ -77,6 +112,7 @@ func (c *clientImpl) get(url string, dst interface{}) error {
 // ErrNoRootURL error
 var ErrNoRootURL = errors.New("no rootURL url")
 
+// GBFS satisfies Client interface
 func (c *clientImpl) GBFS() (g GBFS, err error) {
 	if c.rootURL == "" {
 		err = ErrNoRootURL
@@ -84,8 +120,17 @@ func (c *clientImpl) GBFS() (g GBFS, err error) {
 	}
 	// get the Discover doc
 	err = c.get(c.rootURL, &g)
-
 	return
+}
+
+func (c *clientImpl) Pause() RefreshState {
+	if c.state == Paused {
+		return c.state
+	}
+	err := c.pause()
+	if err != nil {
+		return Errored.with(err)
+	}
 }
 
 // SystemInformation ...
