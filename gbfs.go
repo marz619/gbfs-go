@@ -6,9 +6,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sync"
+	"time"
 
 	f "github.com/marz619/gbfs-go/fields"
 )
+
+const DefaultRefreshDuration = 10 * time.Second
 
 // Client interface is the public Client interface used to retrieve data from
 // a GBFS API
@@ -22,6 +26,8 @@ type AutoRefreshClient interface {
 	Client
 	Pause() RefreshState
 	Resume() RefreshState
+	//
+	next(time.Duration)
 }
 
 // RefreshState enum
@@ -32,6 +38,7 @@ const (
 	Paused
 	Refreshing
 	Errored
+	Noop
 )
 
 // New Client with default http.Client
@@ -82,7 +89,10 @@ type clientImpl struct {
 	*http.Client
 	rootURL     string
 	autoRefresh bool
-	state       RefreshState
+	// protected by mutex
+	m     sync.Mutex
+	state RefreshState                // global state
+	ts    map[interface{}]time.Ticker // per object ticker
 }
 
 func (c *clientImpl) set(_ client) {} // noop to satisfy interface
@@ -125,12 +135,46 @@ func (c *clientImpl) GBFS() (g GBFS, err error) {
 
 func (c *clientImpl) Pause() RefreshState {
 	if c.state == Paused {
-		return c.state
+		return Noop
 	}
-	err := c.pause()
-	if err != nil {
-		return Errored.with(err)
+	c.m.Lock()
+	defer c.m.Unlock()
+	return c.pause()
+}
+
+func (c *clientImpl) pause() RefreshState {
+	if c.state == Paused {
+		return Noop
 	}
+	// stop all the tickers
+	for _, t := range c.ts {
+		t.Stop()
+	}
+	c.state = Paused
+	return c.state
+}
+
+func (c *clientImpl) Resume() RefreshState {
+	if c.state == Refreshing {
+		return Noop
+	}
+	c.m.Lock()
+	defer c.m.Unlock()
+	return c.resume()
+}
+
+func (c *clientImpl) resume() RefreshState {
+	if c.state == Refreshing {
+		return Noop
+	}
+	for _, t := range c.ts {
+		t.Reset(DefaultRefreshDuration)
+	}
+	c.state = Refreshing
+	return c.state
+}
+
+func (c *clientImpl) next(i interface{}, ttl int) {
 }
 
 // SystemInformation ...

@@ -13,8 +13,9 @@ type Output struct {
 	LastUpdated f.Timestamp      `json:"last_updated"`
 	TTL         f.NonNegativeInt `json:"ttl"`
 	Version     string           `json:"version"`
-	// client to implement self-fetching
-	c client
+	// hidden variables
+	self string
+	c    client
 }
 
 // set satisfies client interface
@@ -36,6 +37,41 @@ func (o Output) LastUpdatedRFC3339() string {
 type Feed struct {
 	Name string `json:"name"`
 	URL  f.URL  `json:"url"`
+	//
+	store interface{}
+}
+
+func (f Feed) name() string {
+	return f.Name
+}
+
+func (f Feed) url() string {
+	return f.URL
+}
+
+func (f Feed) fetch(c client) (interface{}, error) {
+	var s interface{}
+
+	switch f.name() {
+	case "station_information":
+		s = new(StationInformation)
+	case "station_status":
+		s = new(StationStatus)
+	case "system regions":
+		s = new(SystemRegions)
+	case "system_information":
+		s = new(SystemInformation)
+	case "system_pricing_plans":
+		s = new(SystemPricingPlans)
+	default:
+		panic("unhandled feed value")
+	}
+	
+	err = c.get(f.url(), s)
+	if err != nil {
+		return nil, err
+	}
+	return s
 }
 
 // Feeds ...
@@ -43,6 +79,12 @@ type Feeds struct {
 	feeds []Feed
 	names []string
 	cache map[string]Feed
+}
+
+type feed interface {
+	name() string
+	url() string
+	fetch(c client) interface{}
 }
 
 // UnmarshalJSON satisifies json.Unmarshaler interface
@@ -71,6 +113,8 @@ func (f Feeds) Names() []string {
 func (f Feeds) URL(name string) f.URL {
 	return f.cache[name].URL
 }
+
+func 
 
 // GBFS https://github.com/NABSA/gbfs/blob/v2.0/gbfs.md#gbfsjson
 type GBFS struct {
