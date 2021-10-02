@@ -35,9 +35,8 @@ func (o Output) LastUpdatedRFC3339() string {
 
 // Feed ...
 type Feed struct {
-	Name string `json:"name"`
-	URL  f.URL  `json:"url"`
-	//
+	Name  string `json:"name"`
+	URL   f.URL  `json:"url"`
 	store interface{}
 }
 
@@ -46,10 +45,14 @@ func (f Feed) name() string {
 }
 
 func (f Feed) url() string {
-	return f.URL
+	return f.URL.String()
 }
 
 func (f Feed) fetch(c client) (interface{}, error) {
+	if f.store != nil {
+		return f.store, nil
+	}
+
 	var s interface{}
 
 	switch f.name() {
@@ -66,12 +69,13 @@ func (f Feed) fetch(c client) (interface{}, error) {
 	default:
 		panic("unhandled feed value")
 	}
-	
-	err = c.get(f.url(), s)
+
+	err := c.get(f.url(), s)
 	if err != nil {
 		return nil, err
 	}
-	return s
+	f.store = s
+	return f.store, nil
 }
 
 // Feeds ...
@@ -84,8 +88,10 @@ type Feeds struct {
 type feed interface {
 	name() string
 	url() string
-	fetch(c client) interface{}
+	fetch(c client) (interface{}, error)
 }
+
+var _ feed = Feed{}
 
 // UnmarshalJSON satisifies json.Unmarshaler interface
 func (f *Feeds) UnmarshalJSON(data []byte) error {
@@ -113,8 +119,6 @@ func (f Feeds) Names() []string {
 func (f Feeds) URL(name string) f.URL {
 	return f.cache[name].URL
 }
-
-func 
 
 // GBFS https://github.com/NABSA/gbfs/blob/v2.0/gbfs.md#gbfsjson
 type GBFS struct {

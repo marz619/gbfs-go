@@ -27,7 +27,7 @@ type AutoRefreshClient interface {
 	Pause() RefreshState
 	Resume() RefreshState
 	//
-	next(time.Duration)
+	next(interface{}, int)
 }
 
 // RefreshState enum
@@ -69,6 +69,7 @@ func NewAutoRefreshClient(rootURL string, c *http.Client) AutoRefreshClient {
 		rootURL:     rootURL,
 		autoRefresh: true,
 		state:       Paused,
+		ts:          make(map[interface{}]time.Ticker),
 	}
 }
 
@@ -116,7 +117,14 @@ func (c *clientImpl) get(url string, dst interface{}) error {
 	}
 
 	// try to unmarshal as json
-	return json.NewDecoder(res.Body).Decode(dst)
+	err = json.NewDecoder(res.Body).Decode(dst)
+	if err != nil {
+		return err
+	}
+	if o, ok := dst.(Output); ok {
+		o.self = url
+	}
+	return nil
 }
 
 // ErrNoRootURL error
@@ -175,6 +183,7 @@ func (c *clientImpl) resume() RefreshState {
 }
 
 func (c *clientImpl) next(i interface{}, ttl int) {
+	// based on TTL set the next timer tick for this object
 }
 
 // SystemInformation ...
