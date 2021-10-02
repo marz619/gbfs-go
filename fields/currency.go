@@ -7,7 +7,7 @@ type Currency struct {
 	*currency.Unit
 }
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (c *Currency) UnmarshalJSON(data []byte) error {
 	s, err := unmarshalToString(data)
 	if err != nil {

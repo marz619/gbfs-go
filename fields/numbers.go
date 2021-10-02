@@ -11,7 +11,7 @@ type NonNegativeInt int
 // ErrNonNegativeInt error
 var ErrNonNegativeInt = errors.New("NonNegativeInt must have value >= 0")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (n *NonNegativeInt) UnmarshalJSON(data []byte) error {
 	i, err := unmarshalToInt(data)
 	if err != nil {
@@ -36,7 +36,7 @@ type NonNegativeFloat float64
 // ErrNonNegativeFloat error
 var ErrNonNegativeFloat = errors.New("NonNegativeFloat must have value >= 0.0")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (n *NonNegativeFloat) UnmarshalJSON(data []byte) error {
 	f, err := unmarshalToFloat64(data)
 	if err != nil {

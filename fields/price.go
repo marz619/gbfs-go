@@ -17,7 +17,7 @@ type Price struct {
 // string or float
 var ErrInvalidPriceType = errors.New("price must be string or float")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (p *Price) UnmarshalJSON(data []byte) error {
 	v, err := unmarshal(data)
 	if err != nil {

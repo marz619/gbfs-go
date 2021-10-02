@@ -13,7 +13,7 @@ type URL struct {
 // ErrURLScheme ...
 var ErrURLScheme = errors.New("URL Scheme must be 'http' OR 'https'")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (u *URL) UnmarshalJSON(data []byte) error {
 	url, err := unmarshalToURL(data)
 	if err != nil {

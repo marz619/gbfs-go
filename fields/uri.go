@@ -7,7 +7,7 @@ type URI struct {
 	*url.URL
 }
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (u *URI) UnmarshalJSON(data []byte) (err error) {
 	(*u).URL, err = unmarshalToURL(data)
 	return err

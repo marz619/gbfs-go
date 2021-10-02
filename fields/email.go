@@ -7,7 +7,7 @@ type Email struct {
 	*mail.Address
 }
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (e *Email) UnmarshalJSON(data []byte) error {
 	s, err := unmarshalToString(data)
 	if err != nil {

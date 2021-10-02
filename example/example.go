@@ -17,6 +17,7 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Println("last updated:", d.LastUpdatedRFC3339())
 	fmt.Println("languages:", d.Languages())
 
 	for _, l := range d.Languages() {
@@ -34,11 +35,11 @@ func main() {
 			panic(err)
 		}
 
-		fmt.Println("\t", l)
-		fmt.Println("\t", si.Data.SystemID)
-		fmt.Println("\t", si.Data.Name)
-		fmt.Println("\t", si.Data.Timezone)
-		fmt.Println("\t", si.LastUpdated)
-		fmt.Println("\t", si.TTL)
+		fmt.Println("\tlanguage:", l)
+		fmt.Println("\tsystem ID:", si.Data.SystemID)
+		fmt.Println("\tsystem name:", si.Data.Name)
+		fmt.Println("\tsystem timezone:", si.Data.Timezone)
+		fmt.Println("\tsystem last updated:", si.LastUpdated)
+		fmt.Println("\tsystem TTL", si.TTL)
 	}
 }

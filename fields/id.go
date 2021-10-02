@@ -8,7 +8,7 @@ type ID string
 // ErrIDSpaces ...
 var ErrIDSpaces = errors.New("ID cannot contain spaces")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (id *ID) UnmarshalJSON(data []byte) error {
 	if id == nil {
 		id = new(ID)

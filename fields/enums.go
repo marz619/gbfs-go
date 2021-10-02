@@ -18,7 +18,7 @@ const (
 // ErrUnknownAlertType ...
 var ErrUnknownAlertType = errors.New("unknown alert type")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (a *AlertType) UnmarshalJSON(data []byte) error {
 	s, err := unmarshalToString(data)
 	if err != nil {
@@ -72,7 +72,7 @@ func (d DayOfWeek) Weekday() time.Weekday {
 // ErrUnknownDayOfWeek ...
 var ErrUnknownDayOfWeek = errors.New("unknown day")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (d *DayOfWeek) UnmarshalJSON(data []byte) error {
 	s, err := unmarshalToString(data)
 	if err != nil {
@@ -102,7 +102,7 @@ const (
 // ErrUnknownMobile ...
 var ErrUnknownMobile = errors.New("unknown mobile")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (m *Mobile) UnmarshalJSON(data []byte) error {
 	s, err := unmarshalToString(data)
 	if err != nil {
@@ -138,7 +138,7 @@ const (
 // ErrUnknownRentalMethod ...
 var ErrUnknownRentalMethod = errors.New("unknown rental method")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (r *RentalMethod) UnmarshalJSON(data []byte) error {
 	s, err := unmarshalToString(data)
 	if err != nil {
@@ -168,7 +168,7 @@ const (
 // ErrUnknownUserType ...
 var ErrUnknownUserType = errors.New("unknown user type")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (u *UserType) UnmarshalJSON(data []byte) error {
 	s, err := unmarshalToString(data)
 	if err != nil {

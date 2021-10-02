@@ -3,6 +3,7 @@ package gbfs
 import (
 	"encoding/json"
 	"errors"
+	"time"
 
 	f "github.com/marz619/gbfs-go/fields"
 )
@@ -12,18 +13,23 @@ type Output struct {
 	LastUpdated f.Timestamp      `json:"last_updated"`
 	TTL         f.NonNegativeInt `json:"ttl"`
 	Version     string           `json:"version"`
-	// Data is implemented in underlying objects
-
-	// client for embedding shenanigans
+	// client to implement self-fetching
 	c client
 }
 
+// set satisfies client interface
 func (o *Output) set(c client) {
 	o.c = c
 }
 
+// get satisfies client interface
 func (o *Output) get(url string, dst interface{}) error {
 	return o.c.get(url, dst)
+}
+
+// LastUpdatedRFC3339 returns LastUpdated timestamp as a RFC3339 formatted value
+func (o Output) LastUpdatedRFC3339() string {
+	return o.LastUpdated.Format(time.RFC3339)
 }
 
 // Feed ...
@@ -39,7 +45,7 @@ type Feeds struct {
 	cache map[string]Feed
 }
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (f *Feeds) UnmarshalJSON(data []byte) error {
 	err := json.Unmarshal(data, &f.feeds)
 	if err != nil {

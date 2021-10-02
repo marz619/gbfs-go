@@ -7,7 +7,7 @@ type Language struct {
 	language.Tag
 }
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (l *Language) UnmarshalJSON(data []byte) error {
 	s, err := unmarshalToString(data)
 	if err != nil {

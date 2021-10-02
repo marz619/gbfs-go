@@ -14,7 +14,7 @@ type Date struct {
 // date format YYYY-MM-DD
 const dateFmt = "2006-01-02"
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (d *Date) UnmarshalJSON(data []byte) error {
 	s, err := unmarshalToString(data)
 	if err != nil {
@@ -35,7 +35,7 @@ type Day NonNegativeInt
 // ErrInvalidDay ...
 var ErrInvalidDay = errors.New("invalid day")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (d *Day) UnmarshalJSON(data []byte) error {
 	n, err := unmarshalToNonNegativeInt(data)
 	if err != nil {
@@ -56,7 +56,7 @@ type Month NonNegativeInt
 // ErrInvalidMonth ...
 var ErrInvalidMonth = errors.New("invalid month")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (m *Month) UnmarshalJSON(data []byte) error {
 	n, err := unmarshalToNonNegativeInt(data)
 	if err != nil {
@@ -77,7 +77,7 @@ type Year NonNegativeInt
 // ErrInvalidYear ...
 var ErrInvalidYear = errors.New("invalid year")
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (y *Year) UnmarshalJSON(data []byte) error {
 	n, err := unmarshalToNonNegativeInt(data)
 	if err != nil {
@@ -100,7 +100,7 @@ type Time struct {
 // time format HH:mm:ss
 const timeFmt = "15:04:05"
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (t *Time) UnmarshalJSON(data []byte) error {
 	s, err := unmarshalToString(data)
 	if err != nil {
@@ -124,7 +124,7 @@ type Timestamp struct {
 	time.Time
 }
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (t *Timestamp) UnmarshalJSON(data []byte) error {
 	i, err := unmarshalToInt(data)
 	if err != nil {
@@ -144,7 +144,7 @@ type Timezone struct {
 	*time.Location
 }
 
-// UnmarshalJSON implements json.Unmarshaler interface
+// UnmarshalJSON satisifies json.Unmarshaler interface
 func (t *Timezone) UnmarshalJSON(data []byte) error {
 	zone, err := unmarshalToString(data)
 	if err != nil {
