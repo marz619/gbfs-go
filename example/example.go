@@ -6,10 +6,10 @@ import (
 	"github.com/marz619/gbfs-go"
 )
 
-var tobikeshare = "https://tor.publicbikesystem.net/ube/gbfs/v1/"
+var toBikeShareURL = "https://tor.publicbikesystem.net/ube/gbfs/v1/"
 
 func main() {
-	gbfs := gbfs.New(tobikeshare)
+	gbfs := gbfs.New(toBikeShareURL)
 
 	// discover
 	d, err := gbfs.GBFS()
