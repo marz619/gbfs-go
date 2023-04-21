@@ -25,7 +25,7 @@ func (o *Output) set(c client) {
 }
 
 // get satisfies client interface
-func (o *Output) get(url string, dst interface{}) error {
+func (o *Output) get(url string, dst any) error {
 	return o.c.get(url, dst)
 }
 
@@ -38,7 +38,7 @@ func (o Output) LastUpdatedRFC3339() string {
 type Feed struct {
 	Name  string `json:"name"`
 	URL   f.URL  `json:"url"`
-	store interface{}
+	store any
 }
 
 func (f Feed) String() string {
@@ -53,12 +53,12 @@ func (f Feed) url() string {
 	return f.URL.String()
 }
 
-func (f Feed) fetch(c client) (interface{}, error) {
+func (f Feed) fetch(c client) (any, error) {
 	if f.store != nil {
 		return f.store, nil
 	}
 
-	var s interface{}
+	var s any
 
 	switch f.name() {
 	case "station_information":
@@ -93,7 +93,7 @@ type Feeds struct {
 type feed interface {
 	name() string
 	url() string
-	fetch(c client) (interface{}, error)
+	fetch(c client) (any, error)
 }
 
 var _ feed = Feed{}

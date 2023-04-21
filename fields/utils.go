@@ -23,7 +23,7 @@ func containsSpaces(s string) bool {
 }
 
 // unmarshal returns an interface value
-func unmarshal(data []byte) (v interface{}, err error) {
+func unmarshal(data []byte) (v any, err error) {
 	err = json.Unmarshal(data, &v)
 	return
 }
@@ -46,18 +46,18 @@ func unmarshalToInt(data []byte) (i int, err error) {
 //
 // this piece of code:
 //
-//	 var s string
-//	 err := json.Unmarshal(data, &s)
-//	 if err != nil {
-//	 	return err
-//	 }
+//	var s string
+//	err := json.Unmarshal(data, &s)
+//	if err != nil {
+//		return err
+//	}
 //
 // becomes:
 //
-//	 s, err := unmarshalToString(data)
-//	 if err != nil {
-//	 	return err
-//	 }
+//	s, err := unmarshalToString(data)
+//	if err != nil {
+//		return err
+//	}
 func unmarshalToString(data []byte) (s string, err error) {
 	err = json.Unmarshal(data, &s)
 	return

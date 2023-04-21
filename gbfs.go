@@ -27,7 +27,7 @@ type AutoRefreshClient interface {
 	Pause() RefreshState
 	Resume() RefreshState
 	//
-	next(interface{}, int)
+	next(any, int)
 }
 
 // RefreshState enum
@@ -69,17 +69,17 @@ func NewAutoRefreshClient(rootURL string, c *http.Client) AutoRefreshClient {
 		rootURL:     rootURL,
 		autoRefresh: true,
 		state:       Paused,
-		ts:          make(map[interface{}]time.Ticker),
+		ts:          make(map[any]time.Ticker),
 	}
 }
 
 // client interface
 type client interface {
-	get(string, interface{}) error
+	get(string, any) error
 	set(client)
 }
 
-func setC(c client, dst interface{}) {
+func setC(c client, dst any) {
 	if t, ok := dst.(client); ok {
 		t.set(c)
 	}
@@ -92,14 +92,14 @@ type clientImpl struct {
 	autoRefresh bool
 	// protected by mutex
 	m     sync.Mutex
-	state RefreshState                // global state
-	ts    map[interface{}]time.Ticker // per object ticker
+	state RefreshState        // global state
+	ts    map[any]time.Ticker // per object ticker
 }
 
 func (c *clientImpl) set(_ client) {} // noop to satisfy interface
 
 // get retrieves
-func (c *clientImpl) get(url string, dst interface{}) error {
+func (c *clientImpl) get(url string, dst any) error {
 	defer setC(c, dst)
 
 	res, err := c.Get(url)
@@ -182,7 +182,7 @@ func (c *clientImpl) resume() RefreshState {
 	return c.state
 }
 
-func (c *clientImpl) next(i interface{}, ttl int) {
+func (c *clientImpl) next(i any, ttl int) {
 	// based on TTL set the next timer tick for this object
 }
 
