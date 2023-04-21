@@ -3,6 +3,7 @@ package gbfs
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	f "github.com/marz619/gbfs-go/fields"
@@ -38,6 +39,10 @@ type Feed struct {
 	Name  string `json:"name"`
 	URL   f.URL  `json:"url"`
 	store interface{}
+}
+
+func (f Feed) String() string {
+	return fmt.Sprintf("%s: %s", f.name(), f.url())
 }
 
 func (f Feed) name() string {
