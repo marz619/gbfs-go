@@ -10,9 +10,9 @@ type AlertType string
 
 const (
 	atSystemClosure  AlertType = "SYSTEM_CLOSURE"
-	atStationClosure           = "STATION_CLOSURE"
-	atStationMove              = "STATION_MOVE"
-	atOther                    = "OTHER"
+	atStationClosure AlertType = "STATION_CLOSURE"
+	atStationMove    AlertType = "STATION_MOVE"
+	atOther          AlertType = "OTHER"
 )
 
 // ErrUnknownAlertType ...
@@ -46,12 +46,12 @@ type DayOfWeek string
 // DayOfWeek constants
 const (
 	mon DayOfWeek = "mon"
-	tue           = "tue"
-	wed           = "wed"
-	thu           = "thu"
-	fri           = "fri"
-	sat           = "sat"
-	sun           = "sun"
+	tue DayOfWeek = "tue"
+	wed DayOfWeek = "wed"
+	thu DayOfWeek = "thu"
+	fri DayOfWeek = "fri"
+	sat DayOfWeek = "sat"
+	sun DayOfWeek = "sun"
 )
 
 var dowWeekday = map[DayOfWeek]time.Weekday{
@@ -96,7 +96,7 @@ type Mobile string
 // Mobile constants
 const (
 	Android Mobile = "android"
-	IOS            = "ios"
+	IOS     Mobile = "ios"
 )
 
 // ErrUnknownMobile ...
@@ -126,13 +126,13 @@ type RentalMethod string
 // RentalMethod constants
 const (
 	RMKey           RentalMethod = "KEY"
-	RMCreditcard                 = "CREDITCARD"
-	RMPaypass                    = "PAYPASS"
-	RMApplepay                   = "APPLEPAY"
-	RMAndroidpay                 = "ANDROIDPAY"
-	RMTransitcard                = "TRANSITCARD"
-	RMAccountnumber              = "ACCOUNTNUMBER"
-	RMPhone                      = "PHONE"
+	RMCreditcard    RentalMethod = "CREDITCARD"
+	RMPaypass       RentalMethod = "PAYPASS"
+	RMApplepay      RentalMethod = "APPLEPAY"
+	RMAndroidpay    RentalMethod = "ANDROIDPAY"
+	RMTransitcard   RentalMethod = "TRANSITCARD"
+	RMAccountnumber RentalMethod = "ACCOUNTNUMBER"
+	RMPhone         RentalMethod = "PHONE"
 )
 
 // ErrUnknownRentalMethod ...
