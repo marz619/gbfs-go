@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"sync"
 	"time"
@@ -109,7 +109,7 @@ func (c *clientImpl) get(url string, dst any) error {
 
 	// check status code
 	if res.StatusCode != http.StatusOK {
-		content, err := ioutil.ReadAll(res.Body)
+		content, err := io.ReadAll(res.Body)
 		if err != nil {
 			return err
 		}
@@ -130,7 +130,7 @@ func (c *clientImpl) get(url string, dst any) error {
 // ErrNoRootURL error
 var ErrNoRootURL = errors.New("no rootURL url")
 
-// GBFS satisfies Client interface
+// GBFS satisfies the Client interface
 func (c *clientImpl) GBFS() (g GBFS, err error) {
 	if c.rootURL == "" {
 		err = ErrNoRootURL
