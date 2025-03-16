@@ -1,56 +1,36 @@
 package fields
 
 import (
+	"encoding/json"
 	"errors"
-	"reflect"
+	"fmt"
 )
 
-// Price is represented as NonNegativeFloat OR string
+// Price is represented as float64 or string
 type Price struct {
-	k reflect.Kind // would be used if we implement MarshalJSON
-	// internal store
-	s string
-	n NonNegativeFloat
+	json.Number
 }
 
-// ErrInvalidPriceType returned when the .(type) of unmarshaled data is not a
-// string or float
+// ErrInvalidPriceType returned when the .(type) of unmarshaled data is not a string
+// or float
 var ErrInvalidPriceType = errors.New("price must be string or float")
 
 // UnmarshalJSON satisifies json.Unmarshaler interface
 func (p *Price) UnmarshalJSON(data []byte) error {
-	v, err := unmarshal(data)
+	err := json.Unmarshal(data, &(p.Number))
 	if err != nil {
-		return err
+		return fmt.Errorf("%w %w", err, ErrInvalidPriceType)
 	}
-
-	switch v.(type) {
-	default:
-		return ErrInvalidPriceType
-	case float64:
-		p.k = reflect.Float64
-		p.n, err = unmarshalToNonNegativeFloat(data)
-		if err != nil {
-			return err
-		}
-		p.s = p.n.String()
-	case string:
-		p.k = reflect.String
-		p.n, err = unmarshalToNonNegativeFloat([]byte(v.(string)))
-		if err != nil {
-			return err
-		}
-		p.s = v.(string)
-	}
-
 	return nil
 }
 
-// Float64 returns the float64 value contained in this NonNegativeFloat
+// Float64 returns the float64 value of this Price
 func (p Price) Float64() float64 {
-	return float64(p.n)
+	f64, _ := p.Number.Float64()
+	return f64
 }
 
+// String returns the string value of this Price
 func (p Price) String() string {
-	return p.s
+	return p.Number.String()
 }
